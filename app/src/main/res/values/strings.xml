@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">ListPad</string>
+    <string name="salvar">Salvar</string>
+    <string name="nome">Nome</string>
+    <string name="descricao">Descrição</string>
+    <string name="urgente">Urgente</string>
+    <string name="categoria">Categoria</string>
+    <string name="todo">TODO</string>
+    <string name="editar">Editar</string>
+    <string name="remover">Remover</string>
+    <string name="pesquisar">Pesquisar</string>
+    <string name="itens">Itens</string>
+    <string name="nenhuma_informacao">Nenhuma Informação Adicionada</string>
+
+</resources>

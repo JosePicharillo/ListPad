@@ -19,19 +19,19 @@
         </activity>
 
         <activity
-            android:name=".activity.CadastroTarefaActivity"
+            android:name=".activity.CadastroListaActivity"
             android:exported="true" />
 
         <activity
-            android:name=".activity.ItemTarefaActivity"
+            android:name=".activity.ItemListActivity"
             android:exported="true" />
 
         <activity
-            android:name=".activity.CadastroItemTarefaActivity"
+            android:name=".activity.AddItemListActivity"
             android:exported="true" />
 
         <activity
-            android:name=".activity.EditarTarefaActivity"
+            android:name=".activity.UpdateListActivity"
             android:exported="true" />
 
     </application>

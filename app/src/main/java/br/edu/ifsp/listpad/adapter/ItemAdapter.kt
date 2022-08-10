@@ -11,14 +11,14 @@ import androidx.recyclerview.widget.RecyclerView
 import br.edu.ifsp.listpad.R
 import br.edu.ifsp.listpad.model.Item
 
-class ItemAdapter(val itemLista: ArrayList<Item>) :
+class ItemAdapter(val item: ArrayList<Item>) :
     RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 
     var listener: ItemListener? = null
     var itemList = ArrayList<Item>()
 
     init {
-        this.itemList = itemLista
+        this.itemList = item
     }
 
     fun setClickListener(listener: ItemListener) {
@@ -40,7 +40,7 @@ class ItemAdapter(val itemLista: ArrayList<Item>) :
         if (itemList[position].flag == 1) {
             holder.flag.isChecked = true
             holder.desc.setTextColor(Color.parseColor("#FF6347"))
-            holder.desc.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG)
+            holder.desc.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
         }
 
     }
@@ -54,8 +54,8 @@ class ItemAdapter(val itemLista: ArrayList<Item>) :
     }
 
     inner class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val desc = view.findViewById<TextView>(R.id.item)
-        val flag = view.findViewById<CheckBox>(R.id.check_item)
+        val desc: TextView = view.findViewById(R.id.item)
+        val flag: CheckBox = view.findViewById(R.id.check_item)
 
         init {
             view.setOnClickListener {

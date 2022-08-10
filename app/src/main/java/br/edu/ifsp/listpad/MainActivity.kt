@@ -9,19 +9,19 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import br.edu.ifsp.listpad.activity.CadastroTarefaActivity
-import br.edu.ifsp.listpad.activity.ItemTarefaActivity
-import br.edu.ifsp.listpad.adapter.TarefaAdapter
+import br.edu.ifsp.listpad.activity.CadastroListaActivity
+import br.edu.ifsp.listpad.activity.ItemListActivity
+import br.edu.ifsp.listpad.adapter.ListAdapter
 import br.edu.ifsp.listpad.data.DatabaseHelper
-import br.edu.ifsp.listpad.model.Tarefa
+import br.edu.ifsp.listpad.model.List
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
 
-    val db = DatabaseHelper(this)
-    var tarefasLista = ArrayList<Tarefa>()
-    lateinit var tarefaAdapter: TarefaAdapter
-    var TITLE = "BLOCO DE LISTAS"
+    private val db = DatabaseHelper(this)
+    private var lists = ArrayList<List>()
+    lateinit var listAdapter: ListAdapter
+    private var titleActivity = "LISTAS"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,38 +29,38 @@ class MainActivity : AppCompatActivity() {
 
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.setOnClickListener {
-            val intent = Intent(applicationContext, CadastroTarefaActivity::class.java)
+            val intent = Intent(applicationContext, CadastroListaActivity::class.java)
             startActivity(intent)
         }
 
-        title = TITLE
+        title = titleActivity
         updateUI()
     }
 
-    fun updateUI() {
-        tarefasLista = db.listarTarefas()
-        val texto = findViewById<TextView>(R.id.textSemLista)
+    private fun updateUI() {
+        lists = db.allLists()
+        val text = findViewById<TextView>(R.id.textSemLista)
         val recyclerview = findViewById<RecyclerView>(R.id.recyclerview)
 
-        if (tarefasLista.size > 0) {
-            tarefaAdapter = TarefaAdapter(tarefasLista)
-            texto.visibility = View.GONE
+        if (lists.size > 0) {
+            listAdapter = ListAdapter(lists)
+            text.visibility = View.GONE
             recyclerview.visibility = View.VISIBLE
 
             recyclerview.layoutManager = LinearLayoutManager(this)
-            recyclerview.adapter = tarefaAdapter
+            recyclerview.adapter = listAdapter
 
-            val listener = object : TarefaAdapter.TarefaListener {
+            val listener = object : ListAdapter.ListListener {
                 override fun onItemClick(pos: Int) {
-                    val intent = Intent(applicationContext, ItemTarefaActivity::class.java)
-                    val t = tarefaAdapter.tarefasLista[pos]
-                    intent.putExtra("tarefa", t)
+                    val intent = Intent(applicationContext, ItemListActivity::class.java)
+                    val t = listAdapter.lists[pos]
+                    intent.putExtra("list", t)
                     startActivity(intent)
                 }
             }
-            tarefaAdapter.setClickListener(listener)
+            listAdapter.setClickListener(listener)
         } else {
-            texto.visibility = View.VISIBLE
+            text.visibility = View.VISIBLE
             recyclerview.visibility = View.GONE
         }
 
@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onQueryTextChange(p0: String?): Boolean {
-                tarefaAdapter.filter.filter(p0)
+                listAdapter.filter.filter(p0)
                 return true
             }
         })

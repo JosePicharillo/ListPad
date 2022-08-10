@@ -6,5 +6,5 @@ class Item(
     var id: Int? = null,
     var descricao: String = "",
     var flag: Int? = null,
-    var tarefaId: Int? = null
+    var idList: Int? = null
 ) : Serializable

@@ -1,47 +1,34 @@
 package br.edu.ifsp.listpad.activity
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import br.edu.ifsp.listpad.MainActivity
 import br.edu.ifsp.listpad.R
 import br.edu.ifsp.listpad.data.DatabaseHelper
-import br.edu.ifsp.listpad.model.Tarefa
+import br.edu.ifsp.listpad.model.List
 
-class EditarTarefaActivity : AppCompatActivity() {
+class CadastroListaActivity : AppCompatActivity() {
 
-    var TITLE = "EDITAR LISTA"
     lateinit var spinner: Spinner
     var categoria = ""
-    private var tarefa = Tarefa()
+    var TITLE = "NOVA LISTA"
     var urgente: Int? = 0 // FALSE = 0 | TRUE = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_editar_tarefa)
+        setContentView(R.layout.activity_add_lista)
+
         title = TITLE
-
-        tarefa = this.intent.getSerializableExtra("tarefa") as Tarefa
-
-        val nome = findViewById<EditText>(R.id.editTextNome)
-        val desc = findViewById<EditText>(R.id.editTextDescricao)
-        val urg = findViewById<CheckBox>(R.id.checkBoxUrgente)
-
-        nome.setText(tarefa.nome)
-        desc.setText(tarefa.descricao)
-        if (tarefa.flag == 1){ urg.isChecked = true }
 
         infoCategoria()
     }
 
     private fun infoCategoria() {
         spinner = findViewById(R.id.spinnerCategoria)
-        val categorias = arrayOf("", "Tarefas", "Compras", "Compromissos", "Geral")
-        categorias.set(0, tarefa.categoria)
+        val categorias = arrayOf("Tarefas", "Compras", "Compromissos", "Geral")
         spinner.adapter =
             ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, categorias)
 
@@ -57,24 +44,14 @@ class EditarTarefaActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_editar_tarefa, menu)
+        menuInflater.inflate(R.menu.menu_add, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val db = DatabaseHelper(this)
-        if (item.itemId == R.id.action_EditarTarefa) {
-
-            val nome = findViewById<EditText>(R.id.editTextNome).text.toString()
-            val desc = findViewById<EditText>(R.id.editTextDescricao).text.toString()
-
-            val t = Tarefa(tarefa.id, nome, desc, urgente, categoria)
-            if (db.atualizarTarefa(t) > 0) {
-                val intent = Intent(applicationContext, MainActivity::class.java)
-                startActivity(intent)
-                Toast.makeText(this, "Informações alteradas", Toast.LENGTH_LONG).show()
-            }
-            finish()
+        if (item.itemId == R.id.action_salvarTarefa) {
+            saveTarefa(db)
         }
         return super.onOptionsItemSelected(item)
     }
@@ -90,4 +67,16 @@ class EditarTarefaActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun saveTarefa(db: DatabaseHelper) {
+        val nome = findViewById<EditText>(R.id.editTextNome).text.toString()
+        val desc = findViewById<EditText>(R.id.editTextDescricao).text.toString()
+
+        val t = List(null, nome, desc, urgente, categoria)
+        if (db.addList(t) > 0) {
+            Toast.makeText(this, "Nova Tarefa Inserida", Toast.LENGTH_LONG).show()
+        }
+        finish()
+    }
+
 }

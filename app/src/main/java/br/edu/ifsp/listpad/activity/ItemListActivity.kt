@@ -5,81 +5,79 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.CheckBox
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import br.edu.ifsp.listpad.MainActivity
 import br.edu.ifsp.listpad.R
 import br.edu.ifsp.listpad.adapter.ItemAdapter
 import br.edu.ifsp.listpad.data.DatabaseHelper
 import br.edu.ifsp.listpad.model.Item
-import br.edu.ifsp.listpad.model.Tarefa
+import br.edu.ifsp.listpad.model.List
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class ItemTarefaActivity : AppCompatActivity() {
+class ItemListActivity : AppCompatActivity() {
 
-    var TITLE = "ITENS LISTA"
-    var itensLista = ArrayList<Item>()
+    private var titleActivity = "ITENS LISTA"
+    private var itemList = ArrayList<Item>()
     lateinit var itemAdapter: ItemAdapter
-    private var tarefa = Tarefa()
-    val db = DatabaseHelper(this)
+    private var list = List()
+    private val db = DatabaseHelper(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_item)
-        title = TITLE
+        title = titleActivity
 
-        tarefa = this.intent.getSerializableExtra("tarefa") as Tarefa
+        list = this.intent.getSerializableExtra("list") as List
 
         val fab = findViewById<FloatingActionButton>(R.id.fab_item)
         fab.setOnClickListener {
-            val intent = Intent(applicationContext, CadastroItemTarefaActivity::class.java)
-            intent.putExtra("tarefa", tarefa)
+            val intent = Intent(applicationContext, AddItemListActivity::class.java)
+            intent.putExtra("list", list)
             startActivity(intent)
         }
-
         updateUI()
     }
 
-    fun updateUI() {
-        itensLista = tarefa.id?.let { db.listarItem(it) }!!
-        val texto = findViewById<TextView>(R.id.textSemItem)
+    private fun updateUI() {
+        itemList = list.id?.let { db.listItem(it) }!!
+        val text = findViewById<TextView>(R.id.textSemItem)
         val recyclerview = findViewById<RecyclerView>(R.id.recyclerview_item)
 
-        if (itensLista.size > 0){
-            itemAdapter = ItemAdapter(itensLista)
-            texto.visibility = View.GONE
+        if (itemList.size > 0) {
+            itemAdapter = ItemAdapter(itemList)
+            text.visibility = View.GONE
             recyclerview.visibility = View.VISIBLE
-
             recyclerview.layoutManager = LinearLayoutManager(this)
             recyclerview.adapter = itemAdapter
 
-            var listener = object : ItemAdapter.ItemListener {
+            val listener = object : ItemAdapter.ItemListener {
                 override fun onItemClick(pos: Int) {
                     val i = itemAdapter.itemList[pos]
-                    atualizarItem(i)
+                    updateItem(i)
                 }
             }
             itemAdapter.setClickListener(listener)
         } else {
-            texto.visibility = View.VISIBLE
+            text.visibility = View.VISIBLE
             recyclerview.visibility = View.GONE
         }
 
     }
 
-    fun atualizarItem(i: Item) {
+    fun updateItem(i: Item) {
         if (i.flag == 0) {
-            val item = Item(i.id, i.descricao, 1, i.tarefaId)
-            if (db.atualizarItem(item) > 0) {
+            val item = Item(i.id, i.descricao, 1, i.idList)
+            if (db.updateItem(item) > 0) {
                 Toast.makeText(this, "Item Finalizado", Toast.LENGTH_LONG).show()
             }
             updateUI()
         } else {
-            val item = Item(i.id, i.descricao, 0, i.tarefaId)
-            if (db.atualizarItem(item) > 0) {
+            val item = Item(i.id, i.descricao, 0, i.idList)
+            if (db.updateItem(item) > 0) {
                 Toast.makeText(this, "Item Não Finalizado", Toast.LENGTH_LONG).show()
             }
             updateUI()
@@ -100,16 +98,16 @@ class ItemTarefaActivity : AppCompatActivity() {
         val db = DatabaseHelper(this)
 
         if (item.itemId == R.id.action_removerTarefa) {
-            if (itensLista.size == 0) {
-                if (db.apagarTarefa(tarefa) > 0) {
+            if (itemList.size == 0) {
+                if (db.removeList(list) > 0) {
                     Toast.makeText(this, "Lista Excluída", Toast.LENGTH_LONG).show()
                 }
                 finish()
             } else {
-                for (i in itensLista) {
-                    db.apagarItem(i)
+                for (i in itemList) {
+                    db.removeItem(i)
                 }
-                if (db.apagarTarefa(tarefa) > 0) {
+                if (db.removeList(list) > 0) {
                     Toast.makeText(this, "Lista Excluída", Toast.LENGTH_LONG).show()
                 }
                 finish()
@@ -117,9 +115,20 @@ class ItemTarefaActivity : AppCompatActivity() {
         }
 
         if (item.itemId == R.id.action_editarTarefa) {
-            val intent = Intent(applicationContext, EditarTarefaActivity::class.java)
-            intent.putExtra("tarefa", tarefa)
+            val intent = Intent(applicationContext, UpdateListActivity::class.java)
+            intent.putExtra("list", list)
             startActivity(intent)
+        }
+
+        if (item.itemId == R.id.action_removerItem) {
+            for (i in itemList) {
+                if (i.flag == 1) {
+                    db.removeItem(i)
+                }
+                Toast.makeText(this, "Itens Excluídos", Toast.LENGTH_LONG).show()
+                val intent = Intent(applicationContext, MainActivity::class.java)
+                startActivity(intent)
+            }
         }
 
         return super.onOptionsItemSelected(item)

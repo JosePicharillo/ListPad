@@ -10,44 +10,46 @@ import androidx.appcompat.app.AppCompatActivity
 import br.edu.ifsp.listpad.MainActivity
 import br.edu.ifsp.listpad.R
 import br.edu.ifsp.listpad.data.DatabaseHelper
-import br.edu.ifsp.listpad.model.Tarefa
+import br.edu.ifsp.listpad.model.List
 
-class EditarTarefaActivity : AppCompatActivity() {
+class UpdateListActivity : AppCompatActivity() {
 
-    var TITLE = "EDITAR LISTA"
-    lateinit var spinner: Spinner
+    private var titleActivity = "EDITAR LISTA"
+    private lateinit var spinner: Spinner
     var categoria = ""
-    private var tarefa = Tarefa()
-    var urgente: Int? = 0 // FALSE = 0 | TRUE = 1
+    private var list = List()
+    private var urgent: Int? = 0 // FALSE = 0 | TRUE = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_editar_tarefa)
-        title = TITLE
+        setContentView(R.layout.activity_editar_lista)
+        title = titleActivity
 
-        tarefa = this.intent.getSerializableExtra("tarefa") as Tarefa
+        list = this.intent.getSerializableExtra("list") as List
 
         val nome = findViewById<EditText>(R.id.editTextNome)
         val desc = findViewById<EditText>(R.id.editTextDescricao)
         val urg = findViewById<CheckBox>(R.id.checkBoxUrgente)
 
-        nome.setText(tarefa.nome)
-        desc.setText(tarefa.descricao)
-        if (tarefa.flag == 1){ urg.isChecked = true }
+        nome.setText(list.nome)
+        desc.setText(list.descricao)
+        if (list.flag == 1) {
+            urg.isChecked = true
+        }
 
-        infoCategoria()
+        infoCategory()
     }
 
-    private fun infoCategoria() {
+    private fun infoCategory() {
         spinner = findViewById(R.id.spinnerCategoria)
-        val categorias = arrayOf("", "Tarefas", "Compras", "Compromissos", "Geral")
-        categorias.set(0, tarefa.categoria)
+        val category = arrayOf("", "Tarefas", "Compras", "Compromissos", "Geral")
+        category[0] = list.categoria
         spinner.adapter =
-            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, categorias)
+            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, category)
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
-                categoria = categorias[pos]
+                categoria = category[pos]
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -68,8 +70,8 @@ class EditarTarefaActivity : AppCompatActivity() {
             val nome = findViewById<EditText>(R.id.editTextNome).text.toString()
             val desc = findViewById<EditText>(R.id.editTextDescricao).text.toString()
 
-            val t = Tarefa(tarefa.id, nome, desc, urgente, categoria)
-            if (db.atualizarTarefa(t) > 0) {
+            val t = List(list.id, nome, desc, urgent, categoria)
+            if (db.updateList(t) > 0) {
                 val intent = Intent(applicationContext, MainActivity::class.java)
                 startActivity(intent)
                 Toast.makeText(this, "Informações alteradas", Toast.LENGTH_LONG).show()
@@ -82,11 +84,10 @@ class EditarTarefaActivity : AppCompatActivity() {
     fun onCheckboxClicked(view: View) {
         if (view is CheckBox) {
             val checked: Boolean = view.isChecked
-
-            if (checked == true){
-                urgente = 1
+            urgent = if (checked) {
+                1
             } else {
-                urgente = 0
+                0
             }
         }
     }

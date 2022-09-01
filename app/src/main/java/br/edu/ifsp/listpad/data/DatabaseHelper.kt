@@ -144,6 +144,13 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         return result
     }
 
+    fun removeItemId(id: Int): Int {
+        val db = this.writableDatabase
+        val result = db.delete(tableItem, "$id=?", arrayOf(id.toString()))
+        db.close()
+        return result
+    }
+
     fun updateItem(item: Item): Int {
         val db = this.writableDatabase
         val values = ContentValues()

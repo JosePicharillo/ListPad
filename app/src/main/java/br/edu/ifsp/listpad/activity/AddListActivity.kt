@@ -10,31 +10,30 @@ import br.edu.ifsp.listpad.R
 import br.edu.ifsp.listpad.data.DatabaseHelper
 import br.edu.ifsp.listpad.model.List
 
-class CadastroListaActivity : AppCompatActivity() {
+class AddListActivity : AppCompatActivity() {
 
-    lateinit var spinner: Spinner
-    var categoria = ""
-    var TITLE = "NOVA LISTA"
-    var urgente: Int? = 0 // FALSE = 0 | TRUE = 1
+    private lateinit var spinner: Spinner
+    var category = ""
+    private var titleNewList = "NOVA LISTA"
+    private var urgent: Int? = 0 // FALSE = 0 | TRUE = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_lista)
 
-        title = TITLE
+        title = titleNewList
 
-        infoCategoria()
+        infoCategory()
     }
 
-    private fun infoCategoria() {
+    private fun infoCategory() {
         spinner = findViewById(R.id.spinnerCategoria)
-        val categorias = arrayOf("Tarefas", "Compras", "Compromissos", "Geral")
-        spinner.adapter =
-            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, categorias)
+        val category = arrayOf("Tarefas", "Compras", "Compromissos", "Geral")
 
+        spinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, category)
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
-                categoria = categorias[pos]
+                this@AddListActivity.category = category[pos]
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -51,7 +50,7 @@ class CadastroListaActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val db = DatabaseHelper(this)
         if (item.itemId == R.id.action_salvarTarefa) {
-            saveTarefa(db)
+            saveTask(db)
         }
         return super.onOptionsItemSelected(item)
     }
@@ -59,20 +58,15 @@ class CadastroListaActivity : AppCompatActivity() {
     fun onCheckboxClicked(view: View) {
         if (view is CheckBox) {
             val checked: Boolean = view.isChecked
-
-            if (checked == true){
-                urgente = 1
-            } else {
-                urgente = 0
-            }
+            urgent = if (checked){ 1 } else { 0 }
         }
     }
 
-    private fun saveTarefa(db: DatabaseHelper) {
+    private fun saveTask(db: DatabaseHelper) {
         val nome = findViewById<EditText>(R.id.editTextNome).text.toString()
         val desc = findViewById<EditText>(R.id.editTextDescricao).text.toString()
 
-        val t = List(null, nome, desc, urgente, categoria)
+        val t = List(null, nome, desc, urgent, category)
         if (db.addList(t) > 0) {
             Toast.makeText(this, "Nova Tarefa Inserida", Toast.LENGTH_LONG).show()
         }

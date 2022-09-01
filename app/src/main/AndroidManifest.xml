@@ -19,7 +19,7 @@
         </activity>
 
         <activity
-            android:name=".activity.CadastroListaActivity"
+            android:name=".activity.AddListActivity"
             android:exported="true" />
 
         <activity

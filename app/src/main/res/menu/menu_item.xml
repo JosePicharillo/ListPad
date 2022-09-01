@@ -14,4 +14,10 @@
         android:title="@string/remover"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/action_removerItem"
+        android:icon="@drawable/ic_baseline_block_24"
+        android:title="@string/remover"
+        app:showAsAction="ifRoom" />
+
 </menu>

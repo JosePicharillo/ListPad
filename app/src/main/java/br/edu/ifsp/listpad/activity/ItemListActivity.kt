@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import br.edu.ifsp.listpad.MainActivity
 import br.edu.ifsp.listpad.R
 import br.edu.ifsp.listpad.adapter.ItemAdapter
 import br.edu.ifsp.listpad.data.DatabaseHelper
@@ -38,7 +39,6 @@ class ItemListActivity : AppCompatActivity() {
             intent.putExtra("list", list)
             startActivity(intent)
         }
-
         updateUI()
     }
 
@@ -51,7 +51,6 @@ class ItemListActivity : AppCompatActivity() {
             itemAdapter = ItemAdapter(itemList)
             text.visibility = View.GONE
             recyclerview.visibility = View.VISIBLE
-
             recyclerview.layoutManager = LinearLayoutManager(this)
             recyclerview.adapter = itemAdapter
 
@@ -119,6 +118,17 @@ class ItemListActivity : AppCompatActivity() {
             val intent = Intent(applicationContext, UpdateListActivity::class.java)
             intent.putExtra("list", list)
             startActivity(intent)
+        }
+
+        if (item.itemId == R.id.action_removerItem) {
+            for (i in itemList) {
+                if (i.flag == 1) {
+                    db.removeItem(i)
+                }
+                Toast.makeText(this, "Itens Excluídos", Toast.LENGTH_LONG).show()
+                val intent = Intent(applicationContext, MainActivity::class.java)
+                startActivity(intent)
+            }
         }
 
         return super.onOptionsItemSelected(item)

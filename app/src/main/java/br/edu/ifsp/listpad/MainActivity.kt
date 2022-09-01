@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import br.edu.ifsp.listpad.activity.CadastroListaActivity
+import br.edu.ifsp.listpad.activity.AddListActivity
 import br.edu.ifsp.listpad.activity.ItemListActivity
 import br.edu.ifsp.listpad.adapter.ListAdapter
 import br.edu.ifsp.listpad.data.DatabaseHelper
@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
 
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.setOnClickListener {
-            val intent = Intent(applicationContext, CadastroListaActivity::class.java)
+            val intent = Intent(applicationContext, AddListActivity::class.java)
             startActivity(intent)
         }
 

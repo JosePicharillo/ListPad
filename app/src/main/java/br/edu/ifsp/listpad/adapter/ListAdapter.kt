@@ -1,7 +1,9 @@
 package br.edu.ifsp.listpad.adapter
 
 import android.annotation.SuppressLint
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
 import android.widget.ImageView
@@ -14,7 +16,7 @@ class ListAdapter(val lists: ArrayList<List>) :
     RecyclerView.Adapter<ListAdapter.ListViewHolder>(), Filterable {
 
     var listener: ListListener? = null
-    var listFilterable = ArrayList<List>() //Filtro Pesquisa
+    var listFilterable = ArrayList<List>()
 
     init {
         this.listFilterable = lists
@@ -39,7 +41,7 @@ class ListAdapter(val lists: ArrayList<List>) :
         holder.desc.text = listFilterable[position].descricao
         holder.category.text = listFilterable[position].categoria
 
-        if (listFilterable[position].flag == 1){
+        if (listFilterable[position].flag == 1) {
             holder.urgent.setImageResource(R.drawable.ic_baseline_urgente_02)
         }
     }

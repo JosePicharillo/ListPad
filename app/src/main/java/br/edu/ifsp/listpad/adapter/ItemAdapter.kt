@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import br.edu.ifsp.listpad.R
@@ -38,9 +39,12 @@ class ItemAdapter(val item: ArrayList<Item>) :
         holder.desc.text = itemList[position].descricao
 
         if (itemList[position].flag == 1) {
-            holder.flag.isChecked = true
-            holder.desc.setTextColor(Color.parseColor("#FF6347"))
+            holder.check.setImageResource(R.drawable.ic_baseline_radio_button_checked_24)
+            holder.desc.setTextColor(Color.parseColor("#C8191B"))
             holder.desc.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+        } else {
+            holder.check.setImageResource(R.drawable.ic_baseline_radio_button_unchecked_24)
+            holder.desc.setTextColor(Color.parseColor("#008D58"))
         }
 
     }
@@ -55,7 +59,7 @@ class ItemAdapter(val item: ArrayList<Item>) :
 
     inner class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val desc: TextView = view.findViewById(R.id.item)
-        val flag: CheckBox = view.findViewById(R.id.check_item)
+        val check: ImageView = view.findViewById(R.id.image_check)
 
         init {
             view.setOnClickListener {
